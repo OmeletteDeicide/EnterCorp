@@ -39,12 +39,9 @@ class CategoryController extends AbstractController
             $category->setAuthorizedroles($sendRole);
             $user = $security->getUser();
             $category->setUser($user);
-
             $entityManager->persist($category);
             $entityManager->flush();
-
             return $this->redirectToRoute("app_index");
-
         }
 
 
