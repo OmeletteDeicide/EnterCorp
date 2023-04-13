@@ -31,14 +31,7 @@ class RegistrationController extends AbstractController
                 )
             );
             $checkEmail = $user->getEmail();
-            if(str_ends_with($checkEmail, '@insider.fr')){
 
-                $user->setRoles(["ROLE_INSIDER"]);
-            }elseif(str_ends_with($checkEmail, '@collaborator.fr')){
-                $user->setRoles(["ROLE_COLLABORATOR"]);
-            }elseif(str_ends_with($checkEmail, '@external.fr')){
-                $user->setRoles(["ROLE_INSIDER"]);
-            }
             switch($checkEmail){
                 case str_ends_with($checkEmail, '@insider.fr'):
                     $user->setRoles(["ROLE_INSIDER"]);
@@ -52,7 +45,7 @@ class RegistrationController extends AbstractController
                 default: 
                 $this->addFlash('error', 'Votre adresse mail ne respecte pas les règles de validation'); 
                 return new RedirectResponse($this->generateUrl('app_register'));
-            }
+            };
 
             $entityManager->persist($user);
             $entityManager->flush();
