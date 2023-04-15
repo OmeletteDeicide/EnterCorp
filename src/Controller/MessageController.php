@@ -24,7 +24,7 @@ class MessageController extends AbstractController
     public function form(Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         $subjectId = $request->get('subjectId');
-        $subjectRepo = $entityManager->getRepository(Category::class);
+        $subjectRepo = $entityManager->getRepository(Subject::class);
         $subject = $subjectRepo->find($subjectId);
 
         $message = new Message();
