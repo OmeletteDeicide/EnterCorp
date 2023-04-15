@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Board;
+use App\Entity\Subject;
 use App\Entity\Category;
 use App\Form\BoardFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,13 +14,40 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
+use function PHPUnit\Framework\isEmpty;
+
 class BoardController extends AbstractController
 {
-    #[Route('/board', name: 'app_board')]
-    public function index(): Response
+
+    private $security;
+    public function __construct(Security $security){
+        $this->security = $security;
+    }
+
+    #[Route('/board/{id}', name: 'app_board')]
+    public function index(EntityManagerInterface $entityManager, Security $security, Board $board, Request $request): Response
     {
+        $board = $entityManager->getRepository(Board::class)->find($request->attributes->get('id'));
+     
+        $subjects = $board->getSubjects();
+        if( $subjects->isEmpty()){
+            return $this->redirectToRoute("app_form_subject", ['boardId' => $request->attributes->get('id')]);
+        }
+        $subjects = array_filter($subjects, function (Subject $subjects){
+            $allowedRoles = $subjects->getAuthorizedroles();
+
+            foreach($allowedRoles as $role){
+                if($this->security->isGranted($role, $subjects)){
+                    return true;
+                }
+            }
+            return  false;
+        });
+        
         return $this->render('board/index.html.twig', [
             'controller_name' => 'BoardController',
+            'board' => $board,
+            'subjects' => $subjects,
         ]);
     }
 
@@ -67,4 +95,5 @@ class BoardController extends AbstractController
             'boardForm' => $form->createView(),
         ]);
     }
+ 
 }

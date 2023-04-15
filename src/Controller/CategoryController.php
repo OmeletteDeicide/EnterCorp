@@ -82,7 +82,7 @@ class CategoryController extends AbstractController
         if ($boards->isEmpty()){
             return $this->redirectToRoute('app_form_board', ['categoryId' => $idCategory]);
         }
-
+     
         // On affiche les sujets de la catégorie
         return $this->render('category/show.html.twig', [
             'category' => $category,

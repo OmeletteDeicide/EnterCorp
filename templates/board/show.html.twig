@@ -9,12 +9,12 @@
 </style>
 
 
-<h1 class="m-auto">Bienvenu dans la categorie : {{ category.Name }} </h1>
-<a href="{{ path('app_form_board', {'categoryId': category.Id }) }}">Créer un board</a>
+<h1 class="m-auto">Bienvenu dans la categorie : {{ board.Name }} </h1>
+<a href="{{ path('app_form_board', {'categoryId': board.Id })}}">Créer un board</a>
 <div class="container">
-{% for board in boards %}
-    <a href="{{ path('app_board', {'id': board.getId() }) }}"class"block-board">
-    <div class="block-title">{{ board.Name }}</div>
+{% for subject in subjects %}
+    <a href=""class"block-board">
+    <div class="block-title">{{ subjects.Name }}</div>
     </a>
     
 {% endfor %}

@@ -9,12 +9,15 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<h1>{{ board.name }}</h1>
 
-    This friendly message is coming from:
+{% if subjects is empty %}
+    <p>Aucun sujet n'a été trouvé pour ce board.</p>
+{% else %}
     <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/pitro/Documents/symfony/EnterCorp/src/Controller/BoardController.php'|file_link(0) }}">src/Controller/BoardController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/pitro/Documents/symfony/EnterCorp/templates/board/index.html.twig'|file_link(0) }}">templates/board/index.html.twig</a></code></li>
+        {% for subject in subjects %}
+            <li><a href="{{ path('subject_show', { 'id': subject.id }) }}">{{ subject.title }}</a></li>
+        {% endfor %}
     </ul>
 </div>
 {% endblock %}
