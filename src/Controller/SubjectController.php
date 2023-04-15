@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Message;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -39,11 +40,11 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    #[Route('/subject/form', name: 'app_form_subject')]
+    #[Route('/subject/form/{board.Id}', name: 'app_form_subject')]
     public function form(Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         $boardId = $request->get('boardId');
-        $boardRepo = $entityManager->getRepository(Category::class);
+        $boardRepo = $entityManager->getRepository(Board::class);
         $board = $boardRepo->find($boardId);
 
         $subject = new Subject();
@@ -73,6 +74,21 @@ class SubjectController extends AbstractController
         return $this->render('subject/form.html.twig', [
             'controller_name' => 'SubjectController',
             'subjectForm' => $form->createView(),
+        ]);
+    }
+    public function show(Message $message): Response
+    {
+
+        $subjects = $message->getSubject();
+        $idMessage = $message->getId();
+        if ($subjects->isEmpty()) {
+            return $this->redirectToRoute('app_form_board', ['categoryId' => $idMessage]);
+        }
+
+        // On affiche les sujets de la catégorie
+        return $this->render('category/show.html.twig', [
+            'message' => $message,
+            'subjects' => $subjects,
         ]);
     }
 
