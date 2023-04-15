@@ -15,11 +15,30 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CategoryController extends AbstractController
 {
+    private $security;
+    public function __construct(Security $security){
+        $this->security = $security;
+    }
     #[Route('/category', name: 'app_category')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+       
+        $categories = $entityManager->getRepository(Category::class)->findAll();
+        $categories = array_filter($categories, function (Category $category){
+            $allowedRoles = $category->getAuthorizedroles();
+
+            foreach($allowedRoles as $role){
+                if($this->security->isGranted($role, $category)){
+                    return true;
+                }
+            }
+            return  false;
+        });
+
+        
         return $this->render('category/index.html.twig', [
             'controller_name' => 'CategoryController',
+            'categories' => $categories,
         ]);
     }
 
@@ -27,12 +46,16 @@ class CategoryController extends AbstractController
     public function form(Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         $category = new Category();
+
         $form = $this->createForm(CategoryFormType::class, $category);
+
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+
             $getResponse = $form->get("roles_options");
             $roleForCateg = $getResponse->getData();
-            $sendRole = array();
+            $sendRole = array("ROLE_ADMIN");
             foreach ($roleForCateg as $categ) {
                 array_push($sendRole, $categ);
             }
@@ -41,16 +64,29 @@ class CategoryController extends AbstractController
             $category->setUser($user);
             $entityManager->persist($category);
             $entityManager->flush();
-            return $this->redirectToRoute("app_index");
+            return $this->redirectToRoute("app_category");
         }
 
 
-     
+
         return $this->render('category/form.html.twig', [
             'controller_name' => 'CategoryController',
             'categoryForm' => $form->createView(),
         ]);
+    }
+    #[Route('/category/{id}', name: 'category_show')]
+    public function show(Category $category): Response{
 
-       
+        $boards = $category->getBoards();
+        $idCategory = $category->getId();
+        if ($boards->isEmpty()){
+            return $this->redirectToRoute('app_form_board', ['categoryId' => $idCategory]);
+        }
+
+        // On affiche les sujets de la catégorie
+        return $this->render('category/show.html.twig', [
+            'category' => $category,
+            'boards' => $boards,
+        ]);
     }
 }
