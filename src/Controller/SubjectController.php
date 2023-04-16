@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Board;
+use App\Entity\Message;
 use App\Entity\Subject;
+use App\Form\MessageFormType;
+use App\Form\SubjectFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Message;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -19,10 +22,22 @@ class SubjectController extends AbstractController
         $this->security = $security;
     }
 
-    #[Route('/subject', name: 'app_subject')]
-    public function index(EntityManagerInterface $entityManager): Response
+    #[Route('/subject/{Id}', name: 'app_subject')]
+    public function index(EntityManagerInterface $entityManager, Security $security, Board $board, Request $request): Response
     {
-        $subjects = $entityManager->getRepository(Subject::class)->findAll();
+        $subjects = $board->getSubjects();
+        $idBoard = $board->getId();
+        if ($subjects->isEmpty()) {
+            return $this->redirectToRoute('app_form_subject', ['boardId' => $idBoard]);
+        }
+
+        // On affiche les sujets de la catégorie
+        return $this->render('subject/show.html.twig', [
+            'board' => $board,
+            'subjects' => $subjects,
+        ]);
+
+        $subjects = $entityManager->getRepository(Subject::class)->find($request->attributes->get('Id'));
         $subjects = array_filter($subjects, function (Subject $subject) {
             $allowedRoles = $subject->getAuthorizedroles();
 
@@ -55,6 +70,9 @@ class SubjectController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $getResponse = $form->get("roles_options");
 
+            $dateCreation = new \DateTime();
+            $subject->setCreationDate($dateCreation);
+
             $roleForSubject = $getResponse->getData();
             $sendRole = array("ROLE_ADMIN");
             foreach ($roleForSubject as $subj) {
@@ -76,19 +94,37 @@ class SubjectController extends AbstractController
             'subjectForm' => $form->createView(),
         ]);
     }
-    public function show(Message $message): Response
-    {
 
-        $subjects = $message->getSubject();
-        $idMessage = $message->getId();
-        if ($subjects->isEmpty()) {
-            return $this->redirectToRoute('app_form_board', ['categoryId' => $idMessage]);
+    #[Route('/subject/show/{Id}', name: 'app_show_subject')]
+    public function show(Subject $subject, Request $request, EntityManagerInterface $entityManager, Security $security): Response
+    {
+        $message = new Message();
+        $messages = $subject->getMessages();
+        $idSubject = $subject->getId();
+
+        $form = $this->createForm(MessageFormType::class, $message);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $dateCreation = new \DateTime();
+            $message->setCreationDate($dateCreation);
+
+            $user = $security->getUser();
+            $message->setUser($user);
+
+            $entityManager->persist($message);
+            // $entityManager->flush();
+
+            return $this->redirectToRoute('app_show_subject', ['Id' => $idSubject]);
         }
 
+
         // On affiche les sujets de la catégorie
-        return $this->render('category/show.html.twig', [
-            'message' => $message,
-            'subjects' => $subjects,
+        return $this->render('subject/show.html.twig', [
+            'messages' => $messages,
+            'subjects' => $idSubject,
+            'messageForm' => $form->createView(),
         ]);
     }
 

@@ -13,7 +13,7 @@
 <a href="{{ path('app_form_board', {'categoryId': board.Id })}}">Créer un board</a>
 <div class="container">
 {% for subject in subjects %}
-    <a href=""class"block-board">
+    <a href="{{ path('app_subject', {'Id': board.Id })}}"class"block-board">
     <div class="block-title">{{ subjects.Name }}</div>
     </a>
     

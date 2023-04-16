@@ -3,8 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Subject;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SubjectFormType extends AbstractType
@@ -33,6 +37,7 @@ class SubjectFormType extends AbstractType
             )
             // ->add('User')
             // ->add('Board')
+            ->add('validate', SubmitType::class)
         ;
     }
 

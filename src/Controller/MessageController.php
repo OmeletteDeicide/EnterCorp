@@ -20,12 +20,15 @@ class MessageController extends AbstractController
         ]);
     }
 
-    #[Route('/message/form', name: 'app_form_message')]
+    #[Route('/message/form/{subject.Id}', name: 'app_form_message')]
     public function form(Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         $subjectId = $request->get('subjectId');
         $subjectRepo = $entityManager->getRepository(Subject::class);
         $subject = $subjectRepo->find($subjectId);
+
+        $dateCreation = date('d/m/Y H:i:s', time());
+        $subject->setCreationDate($dateCreation);
 
         $message = new Message();
         $form = $this->createForm(SubjectFormType::class, $message);

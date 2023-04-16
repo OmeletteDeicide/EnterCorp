@@ -10,7 +10,6 @@
 
 
 <h1 class="m-auto">Bienvenu dans la categorie : {{ subject.Name }} </h1>
-<a href="{{ path('app_form_message', {'subjectId': subject.Id })}}">Ajouter un message ...</a>
 <div class="container">
 {% for message in messages %}
     <a href=""class"block-message">
@@ -19,4 +18,6 @@
     
 {% endfor %}
 </div>
+{{form_start(messageForm)}}
+{{form_end(messageForm)}}
 {% endblock %}
