@@ -46,6 +46,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Message::class, orphanRemoval: true)]
     private Collection $messages;
 
+    #[ORM\Column]
+    private ?bool $Blocked = null;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -252,6 +255,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $message->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isBlocked(): ?bool
+    {
+        return $this->Blocked;
+    }
+
+    public function setBlocked(bool $Blocked): self
+    {
+        $this->Blocked = $Blocked;
 
         return $this;
     }
