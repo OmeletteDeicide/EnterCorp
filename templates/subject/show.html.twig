@@ -9,13 +9,13 @@
 </style>
 
 
-<h1 class="m-auto">Bienvenu dans la categorie : {{ subject.Name }} </h1>
+<h1 class="m-auto">Bienvenu dans la categorie : {{ subject.title }} </h1>
 <div class="container">
 {% for message in messages %}
     <a href=""class"block-message">
+    {{ message.user.pseudo }}
     <div class="block-title">{{ message.content }}</div>
-    </a>
-    
+    </a>   
 {% endfor %}
 </div>
 {{form_start(messageForm)}}

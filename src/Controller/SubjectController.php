@@ -66,6 +66,7 @@ class SubjectController extends AbstractController
 
         $subject->setBoard($board);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $getResponse = $form->get("roles_options");
 
@@ -81,11 +82,19 @@ class SubjectController extends AbstractController
 
             $user = $security->getUser();
             $subject->setUser($user);
-
+        
             $entityManager->persist($subject);
+           
             $entityManager->flush();
+          
+            // On récupère l'id du sujet qui a été flush 
 
-            return $this->redirectToRoute('app_subject', );
+            $subjectId = $subject->getId();
+
+            // et on redirige vers la page du sujet avec l'id qui vient d'être créée
+
+            return $this->redirectToRoute('app_show_subject', ["Id" => $subjectId]);
+
         }
 
         return $this->render('subject/form.html.twig', [
@@ -94,11 +103,15 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    #[Route('/subject/show/{Id}', name: 'app_show_subject')]
+    #[Route('/subject/show/{id}', name: 'app_show_subject')]
     public function show(Subject $subject, Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
+        // On créer une instance de message 
         $message = new Message();
+        // on récupère tout les messages lié à un user
         $messages = $subject->getMessages();
+        $message->setSubject($subject);
+        // on récupère l'id du sujet en question
         $idSubject = $subject->getId();
 
         $form = $this->createForm(MessageFormType::class, $message);
@@ -113,16 +126,16 @@ class SubjectController extends AbstractController
             $message->setUser($user);
 
             $entityManager->persist($message);
-            // $entityManager->flush();
+            $entityManager->flush();
 
-            return $this->redirectToRoute('app_show_subject', ['Id' => $idSubject]);
+            return $this->redirectToRoute('app_show_subject', ['id' => $idSubject]);
         }
 
 
         // On affiche les sujets de la catégorie
         return $this->render('subject/show.html.twig', [
             'messages' => $messages,
-            'subjects' => $idSubject,
+            'subject' => $subject,
             'messageForm' => $form->createView(),
         ]);
     }

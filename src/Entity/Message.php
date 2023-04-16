@@ -28,7 +28,7 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?subject $Subject = null;
+    private ?Subject $Subject = null;
 
     #[ORM\OneToMany(mappedBy: 'Message', targetEntity: Files::class)]
     private Collection $files;
@@ -79,12 +79,12 @@ class Message
         return $this;
     }
 
-    public function getSubject(): ?subject
+    public function getSubject(): ?Subject
     {
         return $this->Subject;
     }
 
-    public function setSubject(?subject $Subject): self
+    public function setSubject(?Subject $Subject): self
     {
         $this->Subject = $Subject;
 
