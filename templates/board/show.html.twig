@@ -1,26 +1,3 @@
-<<<<<<< Updated upstream
-{% extends 'base.html.twig' %}
-
-{% block title %}Hello CategoryController!{% endblock %}
-
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-
-<h1 class="m-auto">Bienvenu dans la categorie : {{ board.Name }} </h1>
-<a href="{{ path('app_form_board', {'categoryId': board.Id })}}">Créer un board</a>
-<div class="container">
-{% for subject in subjects %}
-    <a href="{{ path('app_subject', {'Id': board.Id })}}"class"block-board">
-    <div class="block-title">{{ subjects.Name }}</div>
-    </a>
-    
-{% endfor %}
-</div>
-=======
 {% extends 'index/index.html.twig' %}
 
 {% block title %}Hello CategoryController!
@@ -35,7 +12,7 @@
 	</h4>
 
 	<h4 class="item-display">
-		Board :<a href="{{path("board_show", {"id": board.id})}}">{{ board.Name }}</a>
+		Board :<a href="{{path("app_board", {"id": board.id})}}">{{ board.Name }}</a>
 		<a class="delete" href="{{path("category_show", {"id": category.id})}}">x</a>
 	</h4>
 	<h4 class="item-display">
@@ -47,7 +24,9 @@
 
 {% block data %}
 
-	<button class="float-end btn btn-success">Add Subject</button>
+	<a href="{{path("app_form_subject", {"boardId": board.id})}}">
+		<button class="float-end btn btn-success">Add Subject</button>
+	</a>
 
 	<h3 class="mb-4">Select Subject</h3>
 
@@ -57,24 +36,31 @@
 			<tr>
 				<th scope="col">#</th>
 				<th scope="col">Name Subject</th>
-				<th scope="col">Number of Message</th>
 				<th scope="col">Created By</th>
-
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for subject in subjects %}
 
-				<tr link="{{path("app_form_board", {"categoryId": 1})}}" class="select-cat">
+				<tr link="{{path("app_show_subject", {"id": subject.Id})}}" class="select-cat">
 					<th scope="row">{{1}}</th>
-					<td>{{ subject.Name }}</td>
-					<td>24</td>
-					<td>Florian</td>
+					<td>{{ subject.Title }}</td>
+					<td>{{ subject.user.pseudo }}</td>
+					<td>
+						{% if subject.user.id ==  app.user.id %}
+							<a href="{{path("app_delete_subject", {"id": subject.Id})}}">
+								<svg class="trash" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewbox="0 0 16 16">
+									<path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+								</svg>
+							</a>
+						{% endif %}
+					</td>
 				</tr>
 
 			{% endfor %}
 
 		</tbody>
 	</table>
->>>>>>> Stashed changes
+
 {% endblock %}

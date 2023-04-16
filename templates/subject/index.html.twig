@@ -19,18 +19,18 @@
 
 	<div class="example-wrapper">
 		<h1>Les sujets ✅</h1>
-        <a href="{{ path('app_form_subject') }}" class="btn btn-success">
-            Créer un Sujet.
-        </a>
-        <div class="d-grid">
-		{% for subject in subjects %}
-			<div >
-			<a href="{{ path('subject_show', {'id': subject.id}) }}">
-				<h3>{{ subject.name }}</h3>
-                <span>  </span>
-				{# Affichez d'autres propriétés de l'entité Sujet ici, si nécessaire #}
-			</a>
-			</div>
-		{% endfor %}
-        </div>
+		<a href="{{ path('app_form_subject') }}" class="btn btn-success">
+			Créer un Sujet.
+		</a>
+		<div class="d-grid">
+			{% for subject in subjects %}
+				<div>
+					<a href="{{ path('subject_show', {'id': subject.id}) }}">
+						<h3>{{ subject.name }}</h3>
+						<span></span>
+						{# Affichez d'autres propriétés de l'entité Sujet ici, si nécessaire #}
+					</a>
+				</div>
+			{% endfor %}
+		</div>
 	{% endblock %}

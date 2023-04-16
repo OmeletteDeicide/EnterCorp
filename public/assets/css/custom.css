@@ -1,0 +1,148 @@
+		.message {
+			display: flex !important;
+			background: #83838321;
+			padding: 5px 16px 5px 6px;
+			border-radius: 4px;
+			width: fit-content;
+			margin-bottom: 10px;
+		}
+
+		.message>a {
+			display: flex !important;
+
+		}
+
+		.message>a:hover {
+			filter: blur(5px);
+			opacity: 0.5;
+		}
+
+		.message-date {
+			font-size: 11px;
+			font-style: italic;
+			color: #a1a1a1;
+		}
+
+		.message-current-user {
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		.message-current-user>div {
+			position: relative;
+		}
+
+		.link-message,
+		.link-message:hover {
+			text-decoration: none;
+			color: black;
+		}
+
+
+		.container-form {
+			max-width: 500px;
+			width: 100%;
+			margin: 60px auto;
+			background: #0000001c;
+			padding: 14px;
+			border-radius: 4px;
+		}
+
+
+
+
+		.container-dashboard {
+			margin: 40px 0;
+			display: flex;
+			flex-wrap: wrap;
+			flex-direction: row;
+			align-items: flex-start;
+		}
+
+		.select-cat:hover {
+			background: #0000001c;
+			cursor: pointer;
+		}
+
+		.dashboard {
+			background: #00000038;
+			border-radius: 5px;
+			padding: 10px;
+			width: 20%;
+			min-height: 450px;
+			position: sticky;
+			top: 10px;
+		}
+
+		.data {
+			padding: 0 20px;
+			width: 80%;
+		}
+
+		.item-display:hover>.delete {
+			display: inline
+		}
+
+		.delete,
+		.delete:hover {
+			text-decoration: none;
+			color: #9b1515;
+			font-size: 16px;
+			margin-left: 6px;
+			display: none;
+		}
+
+
+
+		.container-account {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+		}
+
+		.div-container {
+			display: flex;
+			width: 100%;
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.container-left {
+			background: #0000002e;
+			border-radius: 4px;
+			padding: 10px 30px;
+			max-width: 300px;
+		}
+
+		.container-left>.list-group>a,
+		.container-left>.list-group>li {
+			transition: 0.1s;
+			text-decoration: none;
+			cursor: pointer;
+
+		}
+
+		.container-left>a:hover {
+			background: white;
+			color: black;
+		}
+
+		.container-category,
+		.container-board,
+		.container-subject {
+			margin: 0 10px;
+			display: none;
+		}
+
+		.container-right {
+			align-items: center;
+			padding: 10px;
+			max-width: 200px;
+			background: #d1d1d1;
+			border-radius: 4px;
+		}
+
+		.trash {
+			text-decoration: none;
+			color: #9b1515;
+		}

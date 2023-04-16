@@ -3,12 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Message;
+use App\Entity\Subject;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MessageController extends AbstractController
 {
@@ -32,7 +33,7 @@ class MessageController extends AbstractController
 
         $message = new Message();
         $form = $this->createForm(SubjectFormType::class, $message);
-        
+
         $message->setSubject($subject);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -50,5 +51,21 @@ class MessageController extends AbstractController
             'controller_name' => 'MessageController',
             'messageForm' => $form->createView(),
         ]);
+    }
+
+    #[Route('/message/delete/{id}', name: 'app_delete_message')]
+    public function delete(EntityManagerInterface $entityManager, Security $security, Request $request, $id): Response
+    {
+        $message_deleted = $entityManager->getRepository(Message::class)->find($request->attributes->get('id'));
+        $user = $security->getUser();
+        $messages_user = $user->getMessages();
+        foreach ($messages_user as $message_user) {
+            if ($message_deleted->getId() === $message_user->getId()) {
+                $subject = $message_deleted->getSubject();
+                $entityManager->remove($message_deleted);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_show_subject', ['id' => $subject->getId()]);
+            }
+        }
     }
 }

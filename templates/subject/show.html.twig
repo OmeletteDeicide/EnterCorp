@@ -1,23 +1,86 @@
-{% extends 'base.html.twig' %}
+{% extends 'index/index.html.twig' %}
 
-{% block title %}SubjectsInMyMind!{% endblock %}
-
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block title %}Hello CategoryController!
+{% endblock %}
 
 
-<h1 class="m-auto">Bienvenu dans la categorie : {{ subject.title }} </h1>
-<div class="container">
-{% for message in messages %}
-    <a href=""class"block-message">
-    {{ message.user.pseudo }}
-    <div class="block-title">{{ message.content }}</div>
-    </a>   
-{% endfor %}
-</div>
-{{form_start(messageForm)}}
-{{form_end(messageForm)}}
+{% block dashoborad %}
+	<h4 class="item-display">
+		Category :
+		<a href="{{path("category_show", {"id": category.id})}}">{{ category.Name }}</a>
+		<a class="delete" href="/">x</a>
+	</h4>
+
+	<h4 class="item-display">
+		Board :<a href="{{path("app_board", {"id": board.id})}}">{{ board.Name }}</a>
+		<a class="delete" href="{{path("category_show", {"id": category.id})}}">x</a>
+	</h4>
+	<h4 class="item-display">
+		Subject :<a href="{{path("app_show_subject", {"id": board.id})}}">{{ subject.Title }}</a>
+		<a class="delete" href="{{path("app_board", {"id": board.id})}}">x</a>
+	</h4>
+
+{% endblock %}
+
+
+{% block data %}
+	<h3>Subject :
+		{{ subject.Title }}</h3>
+	<div class="my-5">
+		{% if messages is empty %}
+			<p>no message.</p>
+		{% else %}
+			{% for message in messages %}
+
+				{% if message.user.id ==  app.user.id %}
+					<div class="message-current-user">
+						<div>
+							<p class="m-0 message-date">{{ message.creationdate|date('Y-m-d H:i:s') }}</p>
+							<a class="link-message" href="">
+								<div class="d-flex align-content-stretch">
+									<a class="mx-3" href="{{path("app_delete_message", {"id": message.id})}}">
+										<svg class="trash" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewbox="0 0 16 16">
+											<path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+										</svg>
+									</a>
+									<div class="d-flex message">
+
+										<h5 class="m-0 me-3">me:</h5>
+										<div class="block-title">
+											<p class="m-0">{{ message.content }}</p>
+										</div>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<div>
+						<div>
+							<p class="m-0 message-date">{{ message.creationdate|date('Y-m-d H:i:s') }}</p>
+
+							<div class="d-flex message">
+
+								<h5 class="m-0 me-3">{{ message.user.pseudo }}
+									:</h5>
+								<div class="block-title">
+									<p class="m-0">{{ message.content }}</p>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+
+				{% endif %}
+
+
+			{% endfor %}
+		{% endif %}
+
+	</div>
+	<hr classe="hr">
+	{{form_start(messageForm)}}
+	{{form_end(messageForm)}}
+
 {% endblock %}

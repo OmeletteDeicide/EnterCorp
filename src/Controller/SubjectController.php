@@ -51,7 +51,6 @@ class SubjectController extends AbstractController
             'board' => $board,
             'subjects' => $subjects,
         ]);
-
     }
 
     #[Route('/subject/form/{board.Id}', name: 'app_form_subject')]
@@ -82,19 +81,18 @@ class SubjectController extends AbstractController
 
             $user = $security->getUser();
             $subject->setUser($user);
-        
+
             $entityManager->persist($subject);
-           
+
             $entityManager->flush();
-          
+
             // On récupère l'id du sujet qui a été flush 
 
             $subjectId = $subject->getId();
 
             // et on redirige vers la page du sujet avec l'id qui vient d'être créée
 
-            return $this->redirectToRoute('app_show_subject', ["Id" => $subjectId]);
-
+            return $this->redirectToRoute('app_show_subject', ["id" => $subjectId]);
         }
 
         return $this->render('subject/form.html.twig', [
@@ -131,14 +129,31 @@ class SubjectController extends AbstractController
             return $this->redirectToRoute('app_show_subject', ['id' => $idSubject]);
         }
 
-
+        $board = $subject->getBoard();
+        $category = $board->getCategory();
         // On affiche les sujets de la catégorie
         return $this->render('subject/show.html.twig', [
-            'messages' => $messages,
+            'board' => $subject->getBoard(),
+            'category' => $category,
             'subject' => $subject,
+            'messages' => $messages,
             'messageForm' => $form->createView(),
         ]);
     }
 
-
+    #[Route('/subject/delete/{id}', name: 'app_delete_subject')]
+    public function delete(EntityManagerInterface $entityManager, Security $security, Request $request, $id): Response
+    {
+        $subject_deleted = $entityManager->getRepository(Subject::class)->find($request->attributes->get('id'));
+        $user = $security->getUser();
+        $subjects_user = $user->getSubjects();
+        foreach ($subjects_user as $subject_user) {
+            if ($subject_deleted->getId() === $subject_user->getId()) {
+                $board = $subject_deleted->getBoard();
+                $entityManager->remove($subject_deleted);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_board', ['id' => $board->getId()]);
+            }
+        }
+    }
 }
