@@ -18,6 +18,10 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_index');
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -32,7 +36,7 @@ class RegistrationController extends AbstractController
             );
             $checkEmail = $user->getEmail();
 
-            switch($checkEmail){
+            switch ($checkEmail) {
                 case str_ends_with($checkEmail, '@insider.fr'):
                     $user->setRoles(["ROLE_INSIDER"]);
                     break;
@@ -42,9 +46,9 @@ class RegistrationController extends AbstractController
                 case str_ends_with($checkEmail, '@external.fr'):
                     $user->setRoles(["ROLE_EXTERNAL"]);
                     break;
-                default: 
-                $this->addFlash('error', 'Votre adresse mail ne respecte pas les règles de validation'); 
-                return new RedirectResponse($this->generateUrl('app_register'));
+                default:
+                    $this->addFlash('error', 'Votre adresse mail ne respecte pas les règles de validation');
+                    return new RedirectResponse($this->generateUrl('app_register'));
             };
 
             $entityManager->persist($user);

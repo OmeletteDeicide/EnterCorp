@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AccountController!
+{% endblock %}
+
+{% block body %}
+	<h1>My account</h1>
+	<div class="container-account my-5">
+		<div class="div-container container-left">
+			<ul class="list-group">
+				<li container="container-category" class="display-data m-1 list-group-item">My categories</li>
+				<li container="container-board" class="display-data m-1 list-group-item">My boards</li>
+				<li container="container-subject" class="display-data m-1 list-group-item">My subjects</li>
+			</ul>
+		</div>
+		<div class="div-container container-category data">
+			<h3>My categories</h3>
+			{% for category in user.categories %}
+				<a href="{{path("category_show", {"id": category.id})}}">
+					<h3>{{ category.Name}}</h3>
+				</a>
+			{% endfor %}
+
+		</div>
+		<div class="div-container container-board data">
+			<h3>My boards</h3>
+			{% for board in user.boards %}
+				<a href="{{path("app_board", {"id": board.Id})}}">
+					<h3>{{ board.Name}}</h3>
+				</a>
+			{% endfor %}
+		</div>
+		<div class="div-container container-subject data">
+			<h3>My subject</h3>
+			{% for subject in user.subjects %}
+				<a href="{{path("category_show", {"id": subject.id})}}">
+					<h3>{{ subject.Title}}</h3>
+				</a>
+			{% endfor %}
+		</div>
+		<div class="div-container container-right">
+			<a href="{{ path('app_logout') }}">
+				Deconnexion
+			</a>
+		</div>
+	</div>
+	<script>
+		let display_data = document.getElementsByClassName("display-data");
+for (var i = 0; i < display_data.length; i++) {
+display_data[i].addEventListener('click', function () {
+let select = this.getAttribute('container');
+let containers = document.getElementsByClassName("data");
+for (var i = 0; i < containers.length; i++) {
+if (containers[i].classList.contains(select)) {
+containers[i].classList.add('d-flex');
+} else {
+containers[i].classList.remove('d-flex');
+}
+
+}
+
+
+});
+}
+	</script>
+{% endblock %}

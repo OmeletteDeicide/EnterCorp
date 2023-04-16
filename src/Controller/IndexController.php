@@ -2,17 +2,20 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Category;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class IndexController extends AbstractController
 {
-    #[Route('/index', name: 'app_index')]
-    public function index(): Response
+    #[Route('/', name: 'app_index')]
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $categories = $entityManager->getRepository(Category::class)->findAll();
         return $this->render('index/index.html.twig', [
-            'controller_name' => 'IndexController',
+            'controller_name' => 'IndexController', 'categories' => $categories
         ]);
     }
 }

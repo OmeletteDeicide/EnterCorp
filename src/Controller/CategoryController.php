@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Board;
 use App\Entity\Category;
-use App\Form\CategoryFormType;
 
+use App\Form\CategoryFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -16,27 +17,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class CategoryController extends AbstractController
 {
     private $security;
-    public function __construct(Security $security){
+    public function __construct(Security $security)
+    {
         $this->security = $security;
     }
     #[Route('/category', name: 'app_category')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-       
+
         $categories = $entityManager->getRepository(Category::class)->findAll();
-        $categories = array_filter($categories, function (Category $category){
+        $categories = array_filter($categories, function (Category $category) {
             $allowedRoles = $category->getAuthorizedroles();
 
-            foreach($allowedRoles as $role){
-                if($this->security->isGranted($role, $category)){
+            foreach ($allowedRoles as $role) {
+                if ($this->security->isGranted($role, $category)) {
                     return true;
                 }
             }
             return  false;
         });
 
-        
-        return $this->render('category/index.html.twig', [
+
+        return $this->render('index/index.html.twig', [
             'controller_name' => 'CategoryController',
             'categories' => $categories,
         ]);
@@ -75,18 +77,34 @@ class CategoryController extends AbstractController
         ]);
     }
     #[Route('/category/{id}', name: 'category_show')]
-    public function show(Category $category): Response{
+    public function show(Category $category): Response
+    {
 
         $boards = $category->getBoards();
         $idCategory = $category->getId();
-        if ($boards->isEmpty()){
+        if ($boards->isEmpty()) {
             return $this->redirectToRoute('app_form_board', ['categoryId' => $idCategory]);
         }
-     
+
         // On affiche les sujets de la catégorie
         return $this->render('category/show.html.twig', [
             'category' => $category,
             'boards' => $boards,
         ]);
+    }
+
+    #[Route('/category/delete/{id}', name: 'app_delete_category')]
+    public function delete(EntityManagerInterface $entityManager, Security $security, Category $board, Request $request, $id): Response
+    {
+        $category_deleted = $entityManager->getRepository(Category::class)->find($request->attributes->get('id'));
+        $user = $security->getUser();
+        $categories_user = $user->getCategories();
+        foreach ($categories_user as $category_user) {
+            if ($category_deleted->getId() === $category_user->getId()) {
+                $entityManager->remove($category_deleted);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_index');
+            }
+        }
     }
 }

@@ -5,20 +5,27 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Inscription</h1>
+	{% block nav %}{% endblock %}
+	<div class="container-form">
+		<h1 class="h3 mb-3 font-weight-normal">Inscription or
+			<a href="{{path("app_login")}}">login</a>
+		</h1>
 
-	{% for error in app.flashes('error') %}
-		{{ error }}
-	{% endfor %}
+		{% for error in app.flashes('error') %}
+			{{ error }}
+		{% endfor %}
 
-	{{ form_start(registrationForm) }}
-	{{ form_row(registrationForm.Pseudo) }}
-	{{ form_row(registrationForm.Email) }}
-	{{ form_row(registrationForm.plainPassword, {
+		{{ form_start(registrationForm) }}
+		{{ form_row(registrationForm.Pseudo) }}
+		{{ form_row(registrationForm.Email) }}
+		{{ form_row(registrationForm.plainPassword, {
             label: 'Password'
         }) }}
-	{{ form_row(registrationForm.agreeTerms) }}
+		{{ form_row(registrationForm.agreeTerms) }}
 
-	<button type="submit" class="btn">Register</button>
-	{{ form_end(registrationForm) }}
+		<button class="btn btn-lg btn-primary my-3" type="submit">
+			Register
+		</button>
+		{{ form_end(registrationForm) }}
+	</div>
 {% endblock %}

@@ -44,9 +44,10 @@ class BoardController extends AbstractController
             }
             return false;
         });
-
-        return $this->render('board/index.html.twig', [
+        $category = $board->getCategory();
+        return $this->render('board/show.html.twig', [
             'controller_name' => 'BoardController',
+            'category' => $category,
             'board' => $board,
             'subjects' => $subjects,
         ]);
@@ -96,5 +97,20 @@ class BoardController extends AbstractController
             'boardForm' => $form->createView(),
         ]);
     }
+    #[Route('/board/delete/{id}', name: 'app_delete_board')]
+    public function delete(EntityManagerInterface $entityManager, Security $security, Board $board, Request $request, $id): Response
+    {
 
+        $board_deleted = $entityManager->getRepository(Board::class)->find($request->attributes->get('id'));
+        $user = $security->getUser();
+        $boards_user = $user->getBoards();
+        foreach ($boards_user as $board_user) {
+            if ($board_deleted->getId() === $board_user->getId()) {
+                $category = $board_deleted->getCategory();
+                $entityManager->remove($board_deleted);
+                $entityManager->flush();
+                return $this->redirectToRoute('category_show', ['id' => $category->getId()]);
+            }
+        }
+    }
 }
