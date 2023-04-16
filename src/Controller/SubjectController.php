@@ -31,13 +31,10 @@ class SubjectController extends AbstractController
             return $this->redirectToRoute('app_form_subject', ['boardId' => $idBoard]);
         }
 
-        // On affiche les sujets de la catégorie
-        return $this->render('subject/show.html.twig', [
-            'board' => $board,
-            'subjects' => $subjects,
-        ]);
+        dd($request->attributes->get('Id'));
 
-        $subjects = $entityManager->getRepository(Subject::class)->find($request->attributes->get('Id'));
+        $boards = $entityManager->getRepository(Board::class)->find($request->attributes->get('Id'));
+        $subjects = $boards->getSubjects()->toArray();
         $subjects = array_filter($subjects, function (Subject $subject) {
             $allowedRoles = $subject->getAuthorizedroles();
 
@@ -49,10 +46,12 @@ class SubjectController extends AbstractController
             return false;
         });
 
-
-        return $this->render('subject/index.html.twig', [
-            'controller_name' => 'SubjectController',
+        // On affiche les sujets de la catégorie
+        return $this->render('subject/show.html.twig', [
+            'board' => $board,
+            'subjects' => $subjects,
         ]);
+
     }
 
     #[Route('/subject/form/{board.Id}', name: 'app_form_subject')]
@@ -86,7 +85,7 @@ class SubjectController extends AbstractController
             $entityManager->persist($subject);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_subject');
+            return $this->redirectToRoute('app_subject', );
         }
 
         return $this->render('subject/form.html.twig', [
