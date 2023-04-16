@@ -16,8 +16,9 @@
 {% else %}
     <ul>
         {% for subject in subjects %}
-            <li><a href="{{ path('subject_show', { 'id': subject.id }) }}">{{ subject.title }}</a></li>
+            <li><a href="{{ path('app_subject', { 'Id': subject.id }) }}">{{ subject.title }}</a></li>
         {% endfor %}
     </ul>
 </div>
+{% endif %}
 {% endblock %}

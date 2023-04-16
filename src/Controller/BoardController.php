@@ -20,7 +20,8 @@ class BoardController extends AbstractController
 {
 
     private $security;
-    public function __construct(Security $security){
+    public function __construct(Security $security)
+    {
         $this->security = $security;
     }
 
@@ -28,22 +29,22 @@ class BoardController extends AbstractController
     public function index(EntityManagerInterface $entityManager, Security $security, Board $board, Request $request): Response
     {
         $board = $entityManager->getRepository(Board::class)->find($request->attributes->get('id'));
-     
+
         $subjects = $board->getSubjects();
-        if( $subjects->isEmpty()){
+        if ($subjects->isEmpty()) {
             return $this->redirectToRoute("app_form_subject", ['boardId' => $request->attributes->get('id')]);
         }
-        $subjects = array_filter($subjects, function (Subject $subjects){
+        $subjects = array_filter($subjects->toArray(), function (Subject $subjects) {
             $allowedRoles = $subjects->getAuthorizedroles();
 
-            foreach($allowedRoles as $role){
-                if($this->security->isGranted($role, $subjects)){
+            foreach ($allowedRoles as $role) {
+                if ($this->security->isGranted($role, $subjects)) {
                     return true;
                 }
             }
-            return  false;
+            return false;
         });
-        
+
         return $this->render('board/index.html.twig', [
             'controller_name' => 'BoardController',
             'board' => $board,
@@ -60,10 +61,10 @@ class BoardController extends AbstractController
         // On récupère la catégorie correspondante à l'ID
         $categRepo = $entityManager->getRepository(Category::class);
         $category = $categRepo->find($categoryId);
-  
+
         // On crée un nouveau board et on associe la catégorie correspondante
         $board = new Board();
-        
+
         $form = $this->createForm(BoardFormType::class, $board);
         $board->setCategory($category);
         // On crée un formulaire pour ajouter le board
@@ -95,5 +96,5 @@ class BoardController extends AbstractController
             'boardForm' => $form->createView(),
         ]);
     }
- 
+
 }
