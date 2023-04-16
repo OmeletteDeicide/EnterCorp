@@ -13,6 +13,7 @@
 <div class="container">
 {% for message in messages %}
     <a href=""class"block-message">
+    {{ message.user.pseudo }}
     <div class="block-title">{{ message.content }}</div>
     </a>   
 {% endfor %}
