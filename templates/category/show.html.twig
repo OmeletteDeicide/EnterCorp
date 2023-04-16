@@ -1,22 +1,53 @@
-{% extends 'base.html.twig' %}
+{% extends 'index/index.html.twig' %}
 
-{% block title %}Hello CategoryController!{% endblock %}
-
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block title %}Hello CategoryController!
+{% endblock %}
 
 
-<h1 class="m-auto">Bienvenu dans la categorie : {{ category.Name }} </h1>
-<a href="{{ path('app_form_board', {'categoryId': category.Id }) }}">Créer un board</a>
-<div class="container">
-{% for board in boards %}
-    <a href="{{ path('app_board', {'id': board.getId() }) }}"class"block-board">
-    <div class="block-title">{{ board.Name }}</div>
-    </a>
-    
-{% endfor %}
-</div>
+{% block dashoborad %}
+	<h4 class="item-display">
+		Category :
+		<a href="{{path("category_show", {"id": category.id})}}">{{ category.Name }}</a>
+		<a class="delete" href="/">x</a>
+	</h4>
+	<h4 class="item-display">
+		Board :
+	</h4>
+	<h4 class="item-display">
+		Subject :
+	</h4>
+
+{% endblock %}
+
+
+{% block data %}
+	<a href="{{path("app_form_board", {"categoryId": category.id})}}">
+		<button class="float-end btn btn-success">Add Board</button>
+	</a>
+	<h3 class="mb-4">Select Board</h3>
+
+	<table class="table table-striped mt-5">
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Name Board</th>
+				<th scope="col">Number of Subject</th>
+				<th scope="col">Created By</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			{% for board in boards %}
+
+				<tr link="{{path("app_board", {"id": 1})}}" class="select-cat">
+					<th scope="row">{{1}}</th>
+					<td>{{ board.Name }}</td>
+					<td>24</td>
+					<td>Florian</td>
+				</tr>
+
+			{% endfor %}
+
+		</tbody>
+	</table>
 {% endblock %}

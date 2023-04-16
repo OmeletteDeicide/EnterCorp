@@ -1,4 +1,108 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello IndexController!{% endblock %}
+{% block title %}Hello IndexController!
+{% endblock %}
 
+{% block body %}
+	<style>
+		.container-dashboard {
+			margin: 40px 0;
+			display: flex;
+			flex-wrap: wrap;
+			flex-direction: row;
+			align-items: flex-start;
+		}
+		.select-cat:hover {
+			background: #0000001c;
+			cursor: pointer;
+		}
+		.dashboard {
+			background: #00000038;
+			border-radius: 5px;
+			padding: 10px;
+			width: 20%;
+			min-height: 450px;
+			position: sticky;
+			top: 10px;
+		}
+		.data {
+			padding: 0 20px;
+			width: 80%;
+		}
+		.item-display:hover > .delete {
+			display: inline
+		}
+		.delete,
+		.delete:hover {
+			text-decoration: none;
+			color: #9b1515;
+			font-size: 16px;
+			margin-left: 6px;
+			display: none;
+		}
+	</style>
+
+
+	<div class="container-dashboard">
+		<div class="dashboard">
+			<h1 class="mb-5">Dashboard</h1>
+			{% block dashoborad %}
+				<h4 class="item-display">
+					Category :
+				</h4>
+				<h4 class="item-display">
+					Board :
+				</h4>
+				<h4 class="item-display">
+					Subject :
+				</h4>
+			{% endblock %}
+		</div>
+		<div class="data">
+			{% block data %}
+				<a href="{{path("app_form_category")}}">
+					<button class="float-end btn btn-success">Add category</button>
+				</a>
+				<h3 class="mb-4">Select Category</h3>
+
+
+				<table class="table table-striped mt-5">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Name Category</th>
+							<th scope="col">Number of Board</th>
+							<th scope="col">Created By</th>
+
+						</tr>
+					</thead>
+					<tbody>
+						{% for category in categories %}
+
+							<tr link="{{path("category_show", {"id": category.id})}}" class="select-cat">
+								<th scope="row">{{1}}</th>
+								<td>{{ category.Name }}</td>
+								<td>24</td>
+								<td>Florian</td>
+							</tr>
+
+						{% endfor %}
+
+					</tbody>
+				</table>
+			{% endblock %}
+		</div>
+	</div>
+
+
+	<script>
+		let select_cat = document.getElementsByClassName("select-cat");
+for (var i = 0; i < select_cat.length; i++) {
+select_cat[i].addEventListener('click', function () {
+let link = this.getAttribute('link');
+window.location.href = link;
+
+});
+}
+	</script>
+{% endblock %}

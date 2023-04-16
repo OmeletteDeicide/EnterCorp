@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AccountController!
+{% endblock %}
+
+{% block body %}
+	<style>
+		.container-account {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+		}
+		.div-container {
+			display: flex;
+			width: 100%;
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.container-left {
+			background: #0000002e;
+			border-radius: 4px;
+			padding: 10px 30px;
+			max-width: 300px;
+		}
+		.container-left > .list-group > a,
+		.container-left > .list-group > li {
+			transition: 0.1s;
+			text-decoration: none;
+			cursor: pointer;
+
+		}
+		.container-left > a:hover {
+			background: white;
+			color: black;
+		}
+		.container-board,
+		.container-subject {
+			margin: 0 10px;
+			display: none;
+		}
+		.container-right {
+			align-items: center;
+			padding: 10px;
+			max-width: 200px;
+			background: #d1d1d1;
+			border-radius: 4px;
+		}
+	</style>
+	<h1>My account</h1>
+	<div class="container-account my-5">
+		<div class="div-container container-left">
+			<ul class="list-group">
+				<a class="m-1" href="{{path("app_form_category")}}">
+					<li class="list-group-item">Add category</li>
+				</a>
+				<li container="container-board" class="display-data m-1 list-group-item">add board</li>
+				<li container="container-subject" class="display-data m-1 list-group-item">add subject</li>
+			</ul>
+		</div>
+		<div class="div-container container-board data">
+			<h3>Add Board in category</h3>
+			{% for i in 0..10 %}
+				<a href="{{path("app_form_board", {"categoryId": 1})}}">
+					Category list
+				</a>
+			{% endfor %}
+		</div>
+		<div class="div-container container-subject data">
+			<h3>Add subject in board</h3>
+			{% for i in 0..10 %}
+				<a href="{{path("app_form_category")}}">
+					Board list
+				</a>
+			{% endfor %}
+		</div>
+		<div class="div-container container-right">
+			<a href="{{ path('app_logout') }}">
+				Deconnexion
+			</a>
+		</div>
+	</div>
+	<script>
+		let display_data = document.getElementsByClassName("display-data");
+for (var i = 0; i < display_data.length; i++) {
+display_data[i].addEventListener('click', function () {
+let select = this.getAttribute('container');
+let containers = document.getElementsByClassName("data");
+for (var i = 0; i < containers.length; i++) {
+if (containers[i].classList.contains(select)) {
+containers[i].classList.add('d-flex');
+} else {
+containers[i].classList.remove('d-flex');
+}
+
+}
+
+
+});
+}
+	</script>
+{% endblock %}
